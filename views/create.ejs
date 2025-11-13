@@ -1,0 +1,39 @@
+  <form action="/shipments/create" method="POST">
+    
+    <!-- Delivery Contents/Description -->
+    <div class="form-group">
+      <label for="contents">What is being delivered?</label>
+      <textarea id="contents" name="contents" rows="3" placeholder="e.g., 5 pallets of medical supplies, 1 container of frozen goods" required></textarea>
+    </div>
+
+    <!-- Destination/Where it's going -->
+    <div class="form-group">
+      <label for="destination">Destination Address / Location</label>
+      <input type="text" id="destination" name="destination" placeholder="Street Address, City, Province/State" required />
+    </div>
+
+    <!-- Approximate Time (ETA) -->
+    <div class="form-group">
+      <label for="eta">Estimated Time of Arrival (ETA)</label>
+      <input type="datetime-local" id="eta" name="eta" required />
+    </div>
+
+    <!-- Priority -->
+    <div class="form-group">
+      <label for="priority">Priority Level</label>
+      <select id="priority" name="priority" required>
+        <option value="High">High (Immediate)</option>
+        <option value="Medium" selected>Medium (Standard)</option>
+        <option value="Low">Low (Non-urgent)</option>
+      </select>
+    </div>
+
+    <!-- Truck/Driver Information -->
+    <div class="form-group">
+      <label for="truck_id">Truck/Unit ID</label>
+      <input type="text" id="truck_id" name="truck_id" placeholder="e.g., TRK-405, Driver Name" required />
+    </div>
+
+    <button type="submit" class="btn-submit">Log Shipment</button>
+  </form>
+</div>
