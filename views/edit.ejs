@@ -1,28 +1,27 @@
 <!-- This form will call an update function, which you will add to incident_functions.js -->
 <!-- NOTE: The JS function 'updateIncident' will need to be updated to target the new '/trucks' API path -->
-<form id="editIncidentForm" onsubmit="updateIncident(event)">
+<form id="editIncidentForm" onsubmit="updateTruck(event)">
     <input type="hidden" id="incidentId" name="id" value="<%= incident.id %>">
     
     <div class="form-group">
-        <label for="title">Title / Summary <span class="required-star">*</span></label>
+        <label for="title">Unit Number / ID <span class="required-star">*</span></label>
         <!-- NOTE: The 'value' attribute is pre-filled with EJS data -->
         <input type="text" id="title" name="title" required value="<%= incident.title %>">
     </div>
 
     <div class="form-group">
-        <label for="description">Detailed Description <span class="required-star">*</span></label>
+        <label for="description">Model / Detailed Specification <span class="required-star">*</span></label>
         <!-- NOTE: The textarea content is pre-filled with EJS data -->
         <textarea id="description" name="description" rows="4" required><%= incident.description %></textarea>
     </div>
 
     <div class="form-group">
-        <label for="severity">Severity Level</label>
+        <label for="severity">Current Operational Status</label>
         <select id="severity" name="severity">
-            <!-- The current incident data dictates which option is 'selected' -->
-            <option value="Critical" <%= incident.severity === 'Critical' ? 'selected' : '' %>>Critical</option>
-            <option value="High" <%= incident.severity === 'High' ? 'selected' : '' %>>High</option>
-            <option value="Medium" <%= incident.severity === 'Medium' ? 'selected' : '' %>>Medium</option>
-            <option value="Low" <%= incident.severity === 'Low' ? 'selected' : '' %>>Low</option>
+            <!-- Updated options for Truck Status -->
+            <option value="Operational" <%= incident.severity === 'Operational' ? 'selected' : '' %>>Operational</option>
+            <option value="Maintenance" <%= incident.severity === 'Maintenance' ? 'selected' : '' %>>Maintenance</option>
+            <option value="Out of Service" <%= incident.severity === 'Out of Service' ? 'selected' : '' %>>Out of Service</option>
         </select>
     </div>
     
@@ -32,8 +31,14 @@
         </button>
         <!-- Updated button text to reflect 'Truck/Unit' -->
         <!-- NOTE: The JS function 'window.deleteIncident' will also need to be updated to target the new '/trucks' API path -->
-        <button type="button" onclick="window.deleteIncident('<%= incident.id %>')" class="submit-btn delete-btn">
+        <button type="button" onclick="window.deleteTruck('<%= incident.id %>')" class="submit-btn delete-btn">
             Delete Truck/Unit
         </button>
     </div>
 </form>
+
+// Placeholder function for deletion
+function deleteTruck(id) {
+    console.log(`Attempting to delete truck with ID: ${id}`);
+    // In a real application, you would handle the deletion logic here.
+}
