@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fleet Operations Tracker | <%= title %></title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <img src="/img/logo.jpg" alt="Team Logo" />
+      <h1>Fleet Operations Tracker</h1>
+    </div>
+    <nav>
+      <a href="/" class="<%= activePage === 'home' ? 'active' : '' %>">Home</a>
+      <a href="/create" class="<%= activePage === 'create' ? 'active' : '' %>">Log New Trip</a>
+      <a href="/trips" class="<%= activePage === 'trips' ? 'active' : '' %>">View Active Trips</a>
+       <a href="/trucks" class="<%= activePage === 'trucks' ? 'active' : '' %>">Tracked Trucks</a>
+    </nav>
+  </header>
+
+  <main class="page-content">
+    
+    <!-- Trip Edit Form -->
+    <div class="form-container">
+        <h2>Editing Trip: <%= trip.id %></h2>
+        <p>Update trip details, cargo manifest, and change the trip status.</p>
+        
+        <!-- Action target will eventually be a PUT request to update the record -->
+        <form id="tripEditForm" action="/api/trips/<%= trip.id %>" method="POST">
+            <input type="hidden" name="_method" value="PUT"> 
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="unitNumber">Truck / Unit Number <span class="required-star">*</span></label>
+                    <input type="text" id="unitNumber" name="unitNumber" required value="<%= trip.unitNumber %>">
+                </div>
+                
+                <div class="form-group">
+                    <label for="driverName">Driver Name <span class="required-star">*</span></label>
+                    <input type="text" id="driverName" name="driverName" required value="<%= trip.driverName %>">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="status">Trip Status <span class="required-star">*</span></label>
+                <select id="status" name="status" required>
+                    <option value="Active" <%= trip.status === 'Active' ? 'selected' : '' %>>Active (On Route)</option>
+                    <option value="Delayed" <%= trip.status === 'Delayed' ? 'selected' : '' %>>Delayed</option>
+                    <option value="At Destination" <%= trip.status === 'At Destination' ? 'selected' : '' %>>At Destination</option>
+                    <option value="Completed" <%= trip.status === 'Completed' ? 'selected' : '' %>>Completed</option>
+                </select>
+            </div>
+
+            <h3>Route Details</h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="departureLocation">Departure Location <span class="required-star">*</span></label>
+                    <input type="text" id="departureLocation" name="departureLocation" required value="<%= trip.departureLocation %>">
+                </div>
+                
+                <div class="form-group">
+                    <label for="finalDestination">Final Destination <span class="required-star">*</span></label>
+                    <input type="text" id="finalDestination" name="finalDestination" required value="<%= trip.finalDestination %>">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="routeNotes">Route/Stop Notes (Optional)</label>
+                <textarea id="routeNotes" name="routeNotes" rows="3"><%= trip.routeNotes %></textarea>
+            </div>
+
+            <h3>Cargo Details (Manifest)</h3>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cargoType">Primary Cargo Type <span class="required-star">*</span></label>
+                    <select id="cargoType" name="cargoType" required>
+                        <option value="General Freight" <%= trip.cargoType === 'General Freight' ? 'selected' : '' %>>General Freight</option>
+                        <option value="Perishables" <%= trip.cargoType === 'Perishables' ? 'selected' : '' %>>Refrigerated Goods (Perishables)</option>
+                        <option value="Bulk Liquid" <%= trip.cargoType === 'Bulk Liquid' ? 'selected' : '' %>>Bulk Liquid</option>
+                        <option value="Hazardous" <%= trip.cargoType === 'Hazardous' ? 'selected' : '' %>>Hazardous Materials</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="weightKg">Total Weight (kg)</label>
+                    <input type="number" id="weightKg" name="weightKg" value="<%= trip.weightKg %>" min="0">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="manifestSummary">Manifest Summary / Details <span class="required-star">*</span></label>
+                <textarea id="manifestSummary" name="manifestSummary" rows="4" required><%= trip.manifestSummary %></textarea>
+            </div>
+            
+            <div class="action-buttons">
+                <button type="submit" class="submit-btn primary">
+                    Save Changes
+                </button>
+                <button type="button" class="submit-btn delete-btn">
+                    Delete Trip
+                </button>
+            </div>
+        </form>
+    </div>
+  </main>
+  
+  <!-- Footer (About link removed) -->
+  <footer>
+    <p>&copy; 2025 Fleet Operations Tracker Project. INFR3120.</p>
+  </footer>
+</body>
+</html>
