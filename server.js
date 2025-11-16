@@ -1,12 +1,15 @@
+// server.js
+
 const express = require("express");
 const path = require("path");
-// NEW: 1. Import dotenv to load environment variables (like MONGO_URI)
+// 1. Import dotenv to load environment variables (like MONGO_URI)
 const dotenv = require('dotenv'); 
-// NEW: 2. Import the database connection function
+// 2. Import the database connection function
 const connectDB = require('./config/db'); 
+
 const truckRoutes = require('./routes/TruckRoutes'); 
 
-// Load environment variables from .env file
+// Load environment variables from .env file.
 dotenv.config();
 
 // Connect to MongoDB
