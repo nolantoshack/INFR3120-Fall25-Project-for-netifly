@@ -1,27 +1,18 @@
-<<<<<<< HEAD
-=======
 // TruckRoutes.js
 
->>>>>>> 6af3e4e48e344377c4212be65b365b2f3a47e0bc
+
 const express = require('express');
 const router = express.Router();
 
 // Import the Truck Model and User model
 const Truck = require('../model/Truck');
-<<<<<<< HEAD
 const User = require('../model/User');
 
 
-// ==============================
-// SIGN UP ROUTES (ORIGINAL)
-// ==============================
-
-=======
+// SIGN UP ROUTES
 
 const User = require('../model/User');
 
-
->>>>>>> 6af3e4e48e344377c4212be65b365b2f3a47e0bc
 // Show the form page where the user can sign up
 router.get('/SignUp', (req, res) => {
     res.render('SignUp', {
@@ -71,11 +62,9 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-<<<<<<< HEAD
 
-// ==============================
-// ✅ ADDED: LOGIN ROUTES
-// ==============================
+//LOGIN ROUTES
+
 
 // Show login form
 router.get('/login', (req, res) => {
@@ -129,9 +118,8 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// ==============================
-// ✅ ADDED: LOGOUT
-// ==============================
+// LOGOUT
+
 
 router.get('/logout', (req, res) => {
     req.session.destroy(() => {
@@ -140,12 +128,9 @@ router.get('/logout', (req, res) => {
 });
 
 
-// ==============================
-// TRUCK ROUTES (ORIGINAL)
-// ==============================
+// TRUCK ROUTES
 
-=======
->>>>>>> 6af3e4e48e344377c4212be65b365b2f3a47e0bc
+
 // Show the form page where the user can create a truck
 router.get('/create', (req, res) => {
     res.render('create', {
@@ -184,11 +169,8 @@ router.post('/create', async (req, res) => {
 });
 
 
-<<<<<<< HEAD
+
 // Show all trucks in a table
-=======
-// Show all trucks in a table //
->>>>>>> 6af3e4e48e344377c4212be65b365b2f3a47e0bc
 router.get('/trucks', async (req, res) => {
     try {
         // Get all trucks (newest first)
@@ -251,9 +233,5 @@ router.post('/requests/:id', async (req, res) => {
     }
 });
 
-
-<<<<<<< HEAD
 module.exports = router;
-=======
 module.exports = router;
->>>>>>> 6af3e4e48e344377c4212be65b365b2f3a47e0bc
