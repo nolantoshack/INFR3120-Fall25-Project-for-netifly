@@ -1,3 +1,5 @@
+// TruckRoutes.js
+
 const express = require('express');
 const router = express.Router();
 
@@ -16,7 +18,7 @@ router.get('/SignUp', (req, res) => {
     });
 });
 
-// Handle user registration submission //
+// Handle user registration submission
 router.post('/signup', async (req, res) => {
     try {
         // Create the new user document using the Mongoose model
@@ -24,7 +26,7 @@ router.post('/signup', async (req, res) => {
 
         console.log(`New user registered: ${newUser.email}`);
 
-        // This makes 'req.session.User' available for index.ejs to read
+        // This line now successfully sets the session data
         req.session.User = {
             _id: newUser._id,
             fullName: newUser.fullName, 
@@ -56,7 +58,7 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-// Show the form page where the user can create a truck//
+// Show the form page where the user can create a truck
 router.get('/create', (req, res) => {
     res.render('create', {
         title: 'Register New Truck/Unit',
@@ -65,7 +67,7 @@ router.get('/create', (req, res) => {
 });
 
 
-// Save a new truck when the form is submitted //
+// Save a new truck when the form is submitted
 router.post('/create', async (req, res) => {
     try {
         // Create a new truck using the form data
