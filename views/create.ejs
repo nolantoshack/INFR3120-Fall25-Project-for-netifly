@@ -20,17 +20,15 @@
   </header>
 
   <main class="page-content">
-    
     <div class="form-container">
       <h2>Log New Trip & Cargo Manifest</h2>
       <form id="tripLogForm" action="/create" method="POST">
-          
-          <div class="form-row">
+          
+                    <div class="form-row">
             <div class="form-group">
               <label for="unitNumber">Truck / Unit Number <span class="required-star">*</span></label>
               <input type="text" id="unitNumber" name="truckId" required placeholder="e.g., TRK-301">
             </div>
-            
             <div class="form-group">
               <label for="driverName">Driver Name <span class="required-star">*</span></label>
               <input type="text" id="driverName" name="driverName" required placeholder="e.g., John Smith">
@@ -39,28 +37,16 @@
 
           <h3>Route Details</h3>
 
-          <div class="form-group">
+                    <div class="form-group">
             <label for="tripName">Trip Name / Route Title <span class="required-star">*</span></label>
-            <input type="text" id="tripName" name="tripName" required placeholder="e.g., Depot A to Warehouse Z">
+            <input type="text" id="tripName" name="tripName" required placeholder="e.g., Toronto to Warehouse Z">
           </div>
-          
-          <div class="form-row">
-            <div class="form-group">
-              <label for="departureLocation">Departure Location <span class="required-star">*</span></label>
-              <input type="text" id="departureLocation" name="departureLocation" required placeholder="e.g., Toronto Depot A">
-            </div>
-            
-            <div class="form-group">
-              <label for="finalDestination">Final Destination <span class="required-star">*</span></label>
-              <input type="text" id="finalDestination" name="finalDestination" required placeholder="e.g., Montreal Warehouse Z">
-            </div>
-          </div>
-                    <div class="form-row">
+          
+                    <div class="form-row">
             <div class="form-group">
               <label for="scheduledDeparture">Scheduled Departure Time <span class="required-star">*</span></label>
               <input type="datetime-local" id="scheduledDeparture" name="scheduledDeparture" required>
             </div>
-            
             <div class="form-group">
               <label for="estimatedArrival">Estimated Arrival Time <span class="required-star">*</span></label>
               <input type="datetime-local" id="estimatedArrival" name="estimatedArrival" required>
@@ -80,7 +66,6 @@
                 <option value="Hazardous">Hazardous Materials</option>
               </select>
             </div>
-            
             <div class="form-group">
               <label for="weightKg">Total Weight (kg)</label>
               <input type="number" id="weightKg" name="weightKg" placeholder="e.g., 25000" min="0">
@@ -88,10 +73,10 @@
           </div>
 
           <div class="form-group">
-            <label for="manifestSummary">Manifest Summary / Details (Include Route Notes Here) <span class="required-star">*</span></label>
-            <textarea id="manifestSummary" name="manifestSummary" rows="4" required placeholder="List bill of lading numbers, customer names, item specifics, or any special route instructions."></textarea>
+            <label for="manifestSummary">Manifest Summary / Details <span class="required-star">*</span></label>
+            <textarea id="manifestSummary" name="manifestSummary" rows="4" required placeholder="List bill of lading numbers, item specifics, or any special route instructions."></textarea>
           </div>
-          
+          
           <div class="form-group" style="text-align: right; padding-top: 15px;">
             <button type="submit" class="submit-btn primary">
               Log Trip & Create Manifest
