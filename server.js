@@ -55,5 +55,5 @@ app.get(["/", "/index"], (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`✅ Running on http://localhost:${PORT}`);
+    console.log(`Running on http://localhost:${PORT}`);
 });
