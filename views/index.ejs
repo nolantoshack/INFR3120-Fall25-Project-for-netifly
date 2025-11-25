@@ -15,9 +15,6 @@
       <h1>Fleet Operations Tracker</h1>
     </div>
     <nav>
-  <a href="/" class="<%= activePage === 'home' ? 'active' : '' %>">Home</a>
-  <a href="/create" class="<%= activePage === 'create' ? 'active' : '' %>">Log New Trip</a>
-  <a href="/trucks" class="<%= activePage === 'trucks' ? 'active' : '' %>">View Active Trips</a>
 
   <% if (!User) { %>
       <!-- When NOT logged in -->
@@ -26,6 +23,9 @@
   <% } else { %>
       <!-- When logged in -->
       <span class="user-name">Welcome, <%= User.fullName %></span>
+      <a href="/" class="<%= activePage === 'home' ? 'active' : '' %>">Home</a>
+      <a href="/create" class="<%= activePage === 'create' ? 'active' : '' %>">Log New Trip</a>
+      <a href="/trucks" class="<%= activePage === 'trucks' ? 'active' : '' %>">View Active Trips</a>
       <a href="/logout" class="auth-link logout">Logout</a>
   <% } %>
 </nav>
