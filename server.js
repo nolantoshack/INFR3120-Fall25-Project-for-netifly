@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const truckRoutes = require('./routes/TruckRoutes');
 const session = require('express-session');
-const methodOverride = require('method-override'); // <-- ADD THIS
+const methodOverride = require('method-override');
 
 // Load environment variables
 dotenv.config();
@@ -22,19 +22,19 @@ app.use(methodOverride('_method'));
 
 // Session middleware
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'a_strong_fallback_secret',
-    resave: false,
-    saveUninitialized: false, 
-    cookie: { 
-        maxAge: 1000 * 60 * 60 * 24,
-        secure: false
-    } 
+    secret: process.env.SESSION_SECRET || 'a_strong_fallback_secret',
+    resave: false,
+    saveUninitialized: false, 
+    cookie: { 
+        maxAge: 1000 * 60 * 60 * 24,
+        secure: false
+    } 
 }));
 
-//  available in all EJS files
+// available in ALL EJS files
 app.use((req, res, next) => {
-    res.locals.User = req.session.User || null;
-    next();
+    res.locals.User = req.session.User || null;
+    next();
 });
 
 // EJS setup
@@ -49,13 +49,13 @@ app.use('/', truckRoutes);
 
 // Home route
 app.get(["/", "/index"], (req, res) => {
-    res.render("index", {
-        title: "Truck Management Home",
-        activePage: "home"
-    });
+    res.render("index", {
+        title: "Truck Management Home",
+        activePage: "home"
+    });
 });
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Running on http://localhost:${PORT}`);
+    console.log(`Running on http://localhost:${PORT}`);
 });
