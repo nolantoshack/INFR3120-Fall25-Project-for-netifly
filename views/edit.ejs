@@ -59,11 +59,13 @@
                     <div class="form-row">
             <div class="form-group">
               <label for="scheduledDeparture">Scheduled Departure Time <span class="required-star">*</span></label>
-              <input type="datetime-local" id="scheduledDeparture" name="scheduledDeparture" required value="<%= trip.scheduledDeparture %>">
+              <input type="datetime-local" id="scheduledDeparture" name="scheduledDeparture" required 
+                value="<%= new Date(trip.scheduledDeparture).toISOString().slice(0, 16) %>">
             </div>
             <div class="form-group">
               <label for="estimatedArrival">Estimated Arrival Time <span class="required-star">*</span></label>
-              <input type="datetime-local" id="estimatedArrival" name="estimatedArrival" required value="<%= trip.estimatedArrival %>">
+              <input type="datetime-local" id="estimatedArrival" name="estimatedArrival" required 
+                value="<%= new Date(trip.estimatedArrival).toISOString().slice(0, 16) %>">
             </div>
           </div>
 
