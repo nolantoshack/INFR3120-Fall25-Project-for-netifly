@@ -1,18 +1,11 @@
-<<<<<<< HEAD
-=======
-// server.js (FIXED: Added Session Middleware)
-
->>>>>>> 6af3e4e48e344377c4212be65b365b2f3a47e0bc
+// server.js
 const express = require("express");
 const path = require("path");
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const truckRoutes = require('./routes/TruckRoutes');
-<<<<<<< HEAD
 const session = require('express-session');
-=======
-const session = require('express-session'); // <-- NEW: Import session module
->>>>>>> 6af3e4e48e344377c4212be65b365b2f3a47e0bc
+const session = require('express-session'); //Import session module
 
 // Load environment variables
 dotenv.config();
@@ -22,8 +15,6 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-<<<<<<< HEAD
 // Body parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -39,12 +30,12 @@ app.use(session({
     }
 }));
 
-// ✅ Make session user available in ALL EJS files
+// session user available in ALL EJS files
 app.use((req, res, next) => {
     res.locals.User = req.session.User || null;
     next();
 });
-=======
+
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -61,8 +52,6 @@ app.use(session({
     } 
 }));
 
->>>>>>> 6af3e4e48e344377c4212be65b365b2f3a47e0bc
-
 // EJS setup
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -70,7 +59,7 @@ app.set("views", path.join(__dirname, "views"));
 // Static files
 app.use(express.static(path.join(__dirname, "public")));
 
-<<<<<<< HEAD
+
 // Routes
 app.use('/', truckRoutes);
 
@@ -79,7 +68,7 @@ app.get(["/", "/index"], (req, res) => {
     res.render("index", {
         title: "Truck Management Home",
         activePage: "home"
-=======
+
 // ROUTES
 app.use('/', truckRoutes);
 
@@ -90,14 +79,12 @@ app.get(["/", "/index"], (req, res) => {
         activePage: "home",
         // Pass User variable to EJS 
         User: req.session?.User || null
->>>>>>> 6af3e4e48e344377c4212be65b365b2f3a47e0bc
     });
 });
 
 // Start server
 app.listen(PORT, () => {
     console.log(`✅ Running on http://localhost:${PORT}`);
-<<<<<<< HEAD
 });
 =======
 });
