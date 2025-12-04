@@ -49,7 +49,7 @@ router.get(
     }),
     (req, res) => {
         // Successful authentication, redirect home.
-        res.redirect('/trucks');
+        res.redirect('/index');
     }
 );
 
