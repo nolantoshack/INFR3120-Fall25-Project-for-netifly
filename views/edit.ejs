@@ -4,7 +4,8 @@
 <head>
  <meta charset="UTF-8" />
  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- <title>Fleet Operations Tracker | <%= title %></title>
+ <title>Fleet Operations Tracker |
+<%= title %></title>
  <link rel="stylesheet" href="/css/style.css" />
 </head>
      
@@ -13,16 +14,17 @@
       <h2>Editing Trip: <%= trip.tripName %> (<%= trip.truckId %>)</h2>
       <p>Trip ID: <%= trip._id %></p>
 
-      <form action="/requests/<%= trip._id %>" method="POST">
-      <!--labels like in the create form-->
-          <div class="form-row">
+      <form action="/update-trip/<%= trip._id %>" method="POST">
+      <div class="form-row">
               <div class="form-group">
-                  <label for="tripName">Trip Name <span class="required-star">*</span></label>
+       
+           <label for="tripName">Trip Name <span class="required-star">*</span></label>
                   <input type="text" id="tripName" name="tripName" value="<%= trip.tripName %>" required>
               </div>
               <div class="form-group">
                   <label for="truckId">Truck/Unit ID <span class="required-star">*</span></label>
-                  <input type="text" id="truckId" name="truckId" value="<%= trip.truckId %>" required>
+         
+           <input type="text" id="truckId" name="truckId" value="<%= trip.truckId %>" required>
               </div>
           </div>
 
@@ -30,17 +32,20 @@
               <label for="driverName">Driver Name</label>
               <input type="text" id="driverName" name="driverName" value="<%= trip.driverName %>">
           </div>
-          
+   
+        
           <div class="form-row">
               <div class="form-group">
                   <label for="scheduledDeparture">Scheduled Departure <span class="required-star">*</span></label>
                   <input type="date" id="scheduledDeparture" name="scheduledDeparture" 
-                      value="<%= new Date(trip.scheduledDeparture).toISOString().slice(0, 10) %>" required>
+                      value="<%= 
+ new Date(trip.scheduledDeparture).toISOString().slice(0, 10) %>" required>
               </div>
               <div class="form-group">
                   <label for="estimatedArrival">Estimated Arrival</label>
                   <input type="date" id="estimatedArrival" name="estimatedArrival" 
-                      value="<%= trip.estimatedArrival ? new Date(trip.estimatedArrival).toISOString().slice(0, 10) : '' %>">
+                      value="<%= trip.estimatedArrival ?
+ new Date(trip.estimatedArrival).toISOString().slice(0, 10) : '' %>">
               </div>
           </div>
 
@@ -48,20 +53,27 @@
               <div class="form-group">
                   <label for="status">Current Status</label>
                   <select id="status" name="status">
-                      <option value="Scheduled" <%= trip.status === 'Scheduled' ? 'selected' : '' %>>Scheduled</option>
+     
+                  <option value="Scheduled" <%= trip.status === 'Scheduled' ? 'selected' : '' %>>Scheduled</option>
                       <option value="In Transit" <%= trip.status === 'In Transit' ? 'selected' : '' %>>In Transit</option>
                       <option value="Delayed" <%= trip.status === 'Delayed' ? 'selected' : '' %>>Delayed</option>
-                      <option value="Delivered" <%= trip.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+      
+                  <option value="Delivered" <%= trip.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
                       <option value="Cancelled" <%= trip.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
                   </select>
               </div>
-              <div class="form-group">
+          
+          <div class="form-group">
                   <label for="cargoType">Cargo Type</label>
                   <select id="cargoType" name="cargoType">
-                      <option value="General" <%= trip.cargoType === 'General' ? 'selected' : '' %>>General Freight</option>
-                      <option value="Refrigerated" <%= trip.cargoType === 'Refrigerated' ? 'selected' : '' %>>Refrigerated</option>
-                      <option value="Bulk Liquid" <%= trip.cargoType === 'Bulk Liquid' ? 'selected' : '' %>>Bulk Liquid</option>
-                      <option value="Hazardous" <%= trip.cargoType === 'Hazardous' ? 'selected' : '' %>>Hazardous Materials</option>
+                      <option value="General" <%= trip.cargoType === 'General' ?
+ 'selected' : '' %>>General Freight</option>
+                      <option value="Refrigerated" <%= trip.cargoType === 'Refrigerated' ?
+ 'selected' : '' %>>Refrigerated</option>
+                      <option value="Bulk Liquid" <%= trip.cargoType === 'Bulk Liquid' ?
+ 'selected' : '' %>>Bulk Liquid</option>
+                      <option value="Hazardous" <%= trip.cargoType === 'Hazardous' ?
+ 'selected' : '' %>>Hazardous Materials</option>
                   </select>
               </div>
           </div>
@@ -69,15 +81,16 @@
           <div class="form-group">
               <label for="weightKg">Total Weight (kg)</label>
               <input type="number" id="weightKg" name="weightKg" value="<%= trip.weightKg %>" min="0">
+     
           </div>
 
           <div class="form-group">
               <label for="manifestSummary">Manifest Summary / Details <span class="required-star">*</span></label>
               <textarea id="manifestSummary" name="manifestSummary" rows="4" required><%= trip.manifestSummary %></textarea>
           </div>
-<!-- buttons to delete and edit-->
-          <div class="form-group" style="text-align: right; padding-top: 15px;">
-              <button type="submit" class="submit-btn primary">
+<div class="form-group" style="text-align: right; padding-top: 15px;">
+              
+ <button type="submit" class="submit-btn primary">
                   Save Changes
               </button>
           </div>
@@ -85,8 +98,9 @@
       <hr>
 
       <div style="text-align: right; margin-top: 20px;">
-          <form action="/requests/<%= trip._id %>" method="POST" style="display: inline-block;">
-              <input type="hidden" name="_method" value="DELETE">
+          <form action="/delete-trip/<%= trip._id %>" method="POST" style="display: inline-block;">
+              <input type="hidden" 
+ name="_method" value="DELETE">
               <button type="submit" class="submit-btn delete-btn" onclick="return confirm('Are you sure you want to delete this trip?');">
                   Delete Trip
               </button>
