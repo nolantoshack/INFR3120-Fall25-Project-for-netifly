@@ -7,7 +7,7 @@ module.exports = function (passport) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "/auth/google/callback"
+        callbackURL: 'https://truck-shipment-managment.onrender.com/auth/google/callback'
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
