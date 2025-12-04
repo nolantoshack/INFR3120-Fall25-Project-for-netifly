@@ -31,7 +31,8 @@ router.get('/login', (req, res) => {
 router.post('/login',
     // Call the local passport strategy
     passport.authenticate('local', {
-        successRedirect: '/index', 
+        // FIX: Redirects to the home page after successful login
+        successRedirect: '/', 
         failureRedirect: '/login?error=Invalid%20Email%20or%20Password.',
         failureFlash: false 
     })
@@ -48,8 +49,8 @@ router.get(
         failureRedirect: '/login?error=Google%20Login%20Failed.' 
     }),
     (req, res) => {
-        // Successful authentication, redirect home.
-        res.redirect('/index');
+        // FIX: Redirects to the home page after successful Google login
+        res.redirect('/'); 
     }
 );
 
@@ -57,7 +58,8 @@ router.get(
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) { return next(err); }
-        res.redirect('/login?message=You%20have%20been%20logged%20out.');
+        // FIX: Redirects to the home page (/) instead of the login page (/login)
+        res.redirect('/?message=You%20have%20been%20logged%20out.');
     });
 });
 
@@ -89,7 +91,7 @@ router.post('/signup', async (req, res) => {
                 console.error('Auto-login failed after signup:', err);
                 return res.redirect('/login?error=Registration%20successful,%20but%20auto-login%20failed.%20Please%20log%20in.');
             }
-            return res.redirect('/trucks?message=Registration%20Successful!%20Welcome.');
+            return res.redirect('/?message=Registration%20Successful!%20Welcome.'); // Redirect to home after signup
         });
         
     } catch (err) {
@@ -131,9 +133,7 @@ router.get('/trucks', ensureAuth, async (req, res) => {
     try {
         // Fetch all trips from all users
         const trips = await Truck.find({})
-            // FIX: Removed .populate('user') to prevent crashes 
-            // caused by invalid/missing user IDs in the database.
-            // The display will now rely on truck.driverName if truck.user.fullName is unavailable.
+            // .populate('user') // Kept commented out for stability
             .sort({ scheduledDeparture: 'desc' }) // Sort by departure date
             .lean(); 
 
