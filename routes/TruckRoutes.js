@@ -37,6 +37,30 @@ router.post('/login',
     })
 );
 
+// Google OAuth
+router.get('/auth/google', passport.authenticate('google', { 
+    scope: ['profile', 'email'] 
+}));
+
+router.get(
+    '/auth/google/callback',
+    passport.authenticate('google', { 
+        failureRedirect: '/login?error=Google%20Login%20Failed.' 
+    }),
+    (req, res) => {
+        // Successful authentication, redirect home.
+        res.redirect('/trucks');
+    }
+);
+
+// Logout Route
+router.get('/logout', (req, res, next) => {
+    req.logout((err) => {
+        if (err) { return next(err); }
+        res.redirect('/login?message=You%20have%20been%20logged%20out.');
+    });
+});
+
 // Show the form page where the user can sign up
 router.get('/signup', (req, res) => {
     res.render('SignUp', {
@@ -58,26 +82,23 @@ router.post('/signup', async (req, res) => {
         }
 
         const newUser = await User.create({ email, password, fullName, role });
-        // After creation, redirect to login page
-        res.redirect('/login?message=Registration%20successful!%20Please%20log%20in.');
+
+        // Auto-login the user after registration
+        req.login(newUser, function(err) {
+            if (err) {
+                console.error('Auto-login failed after signup:', err);
+                return res.redirect('/login?error=Registration%20successful,%20but%20auto-login%20failed.%20Please%20log%20in.');
+            }
+            return res.redirect('/trucks?message=Registration%20Successful!%20Welcome.');
+        });
+        
     } catch (err) {
-        console.error('Registration Error:', err);
-        // Handle validation errors or other issues
-        res.redirect('/signup?error=Registration%20failed.%20Please%20check%20your%20inputs.');
+        console.error('Error in signup:', err);
+        res.redirect('/signup?error=Registration%20failed.%20Please%20try%20again.');
     }
 });
 
-
-// Logout route
-router.get('/logout', (req, res, next) => {
-    // Passport provides req.logout() to terminate the session
-    req.logout(function(err) {
-        if (err) { return next(err); }
-        res.redirect('/?message=You%20have%20been%20logged%20out.');
-    });
-});
-
-// Show the form to create a new trip
+// Route to render the Create New Trip form
 router.get('/create', ensureAuth, (req, res) => {
     res.render('create', {
         title: 'Log New Trip',
@@ -86,60 +107,54 @@ router.get('/create', ensureAuth, (req, res) => {
     });
 });
 
-
-// Handle new trip creation
-router.post('/create-trip', ensureAuth, async (req, res) => {
+// Route to handle form submission and save the new truck/trip
+router.post('/create', ensureAuth, async (req, res) => {
     try {
-        // Create the trip object and associate it with the current logged-in user
-        const newTrip = {
+        // Assign the current authenticated user's ID to the trip
+        const newTrip = new Truck({
             ...req.body,
-            user: req.user.id // Link the trip to the user ID
-        };
-        
-        await Truck.create(newTrip);
-        res.redirect('/trucks?message=New%20Trip%20Logged%20Successfully');
+            user: req.user.id
+        });
+
+        await newTrip.save();
+        res.redirect('/trucks?message=Trip%20Logged%20Successfully');
     } catch (err) {
-        console.error('Trip Creation Error:', err);
-        // If it's a validation error, we can try to extract and pass the message
-        let errorMsg = 'Failed to log trip. Please check all required fields.';
-        if (err.name === 'ValidationError') {
-            const messages = Object.values(err.errors).map(val => val.message);
-            errorMsg = messages.join('; ');
-        }
-        res.redirect(`/create?error=${encodeURIComponent(errorMsg)}`);
+        console.error('Error logging new trip:', err);
+        // Redirect back to the create page on error
+        res.redirect('/create?error=Failed%20to%20log%20trip.%20Check%20your%20inputs.');
     }
 });
 
-// Show all active trips
-router.get('/trucks', ensureAuth, async (req, res) => {
+// Route to list all active trips
+router.get('/trucks', async (req, res) => {
     try {
-        // Fetch all trips for all users
+        // Fetch all trips from all users
         const trips = await Truck.find({})
-            .sort({ createdAt: 'desc' }) // Sort by creation date descending
-            .populate('user', 'fullName') 
-            .lean(); // Convert Mongoose documents to plain JavaScript objects
+            .sort({ scheduledDeparture: 'desc' }) // Sort by departure date
+            .lean(); // For plain JavaScript objects
 
         res.render('trucks', {
-            trips: trips,
-            title: 'Active Fleet Manifests',
+            trips,
+            title: 'Active Trip Manifests',
             activePage: 'trucks',
-            error: req.query.error || null,
-            message: req.query.message || null
+            message: req.query.message || null,
+            error: req.query.error || null
         });
     } catch (err) {
-        console.error('Error fetching trucks:', err);
-        res.status(500).send('Error fetching truck manifest data.');
+        console.error('Error fetching trips:', err);
+        res.status(500).send('Error fetching trip data.');
     }
 });
 
-// Show edit trip form
-router.get('/edit-trip/:id', ensureAuth, async (req, res) => {
-    const error = req.query.error || null;
+// Show edit page
+router.get('/edit-trip/:id', async (req, res) => {
     try {
         const trip = await Truck.findById(req.params.id).lean();
-
+        
         if (!trip) return res.status(404).send('Trip not found');
 
+        const error = req.query.error || null;
+        
         res.render('edit', {
             trip,
             title: `Edit Trip: ${trip.truckId}`,
@@ -153,7 +168,7 @@ router.get('/edit-trip/:id', ensureAuth, async (req, res) => {
 });
 
 // Save edited trip
-router.post('/update-trip/:id', ensureAuth, async (req, res) => {
+router.post('/update-trip/:id', async (req, res) => {
     try {
         let trip = await Truck.findById(req.params.id);
         
@@ -169,13 +184,15 @@ router.post('/update-trip/:id', ensureAuth, async (req, res) => {
 });
 
 // Delete trip
-router.post('/delete-trip/:id', ensureAuth, async (req, res) => {
+router.post('/delete-trip/:id', async (req, res) => {
     try {
         let trip = await Truck.findById(req.params.id);
 
         if (!trip) return res.status(404).send('Trip not found');
+
+        // Perform the deletion
         await Truck.deleteOne({ _id: req.params.id });
-        
+
         res.redirect('/trucks?message=Trip%20Deleted%20Successfully');
     } catch (err) {
         console.error('Error deleting trip:', err);
