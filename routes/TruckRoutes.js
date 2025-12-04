@@ -117,7 +117,7 @@ router.post('/create', ensureAuth, async (req, res) => {
         });
 
         await newTrip.save();
-        // The redirect to the list of trucks is correct
+        // Redirect to the list of trucks on success
         res.redirect('/trucks?message=Trip%20Logged%20Successfully');
     } catch (err) {
         console.error('Error logging new trip:', err);
@@ -131,11 +131,12 @@ router.get('/trucks', ensureAuth, async (req, res) => {
     try {
         // Fetch all trips from all users
         const trips = await Truck.find({})
+            .populate('user') 
             .sort({ scheduledDeparture: 'desc' }) // Sort by departure date
-            .lean(); // For plain JavaScript objects
+            .lean(); 
 
         res.render('trucks', {
-            trips,
+            trips, // Pass the list of trips to the EJS template
             title: 'Active Trip Manifests',
             activePage: 'trucks',
             message: req.query.message || null,
@@ -143,7 +144,7 @@ router.get('/trucks', ensureAuth, async (req, res) => {
         });
     } catch (err) {
         console.error('Error fetching trips:', err);
-        // Redirect to a safe page on error
+        // Redirect to a safe page on a server error instead of throwing a raw 500 page
         res.redirect('/?error=Failed%20to%20load%20trip%20data%20due%20to%20a%20server%20error.');
     }
 });
@@ -177,7 +178,6 @@ router.post('/update-trip/:id', ensureAuth, async (req, res) => {
         if (!trip) return res.status(404).send('Trip not found');
 
         await Truck.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-        // The redirect to the list of trucks is correct
         res.redirect('/trucks?message=Trip%20Updated%20Successfully');
     } catch (err) {
         console.error('Error updating trip:', err);
@@ -196,7 +196,6 @@ router.post('/delete-trip/:id', ensureAuth, async (req, res) => {
         // Perform the deletion
         await Truck.deleteOne({ _id: req.params.id });
 
-        // The redirect to the list of trucks is correct
         res.redirect('/trucks?message=Trip%20Deleted%20Successfully');
     } catch (err) {
         console.error('Error deleting trip:', err);

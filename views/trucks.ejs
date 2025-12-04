@@ -25,6 +25,12 @@
   <main class="page-content">
     <div class="table-container">
 
+      <% if (message) { %>
+        <div class="message-box success-box"><%= message %></div>
+      <% } else if (error) { %>
+        <div class="message-box error-box"><%= error %></div>
+      <% } %>
+      
       <h2>Tracked Trucks / Trips</h2>
       <p>Below is a list of all tracked trucks currently stored in the system.</p>
 
@@ -61,7 +67,13 @@
                 
                 <td><%= truck.tripName %></td>
                 <td><%= truck.truckId %></td>
-                <td><%= truck.driverName %></td>
+                <td>
+                  <% if (truck.user && truck.user.fullName) { %>
+                    <%= truck.user.fullName %>
+                  <% } else { %>
+                    <%= truck.driverName %> 
+                  <% } %>
+                </td>
 
                 <td>
                   <% if (truck.scheduledDeparture) { %>
@@ -89,7 +101,7 @@
                 <td><%= truck.weightKg %></td>
 
                 <td>
-                  <a href="/requests/<%= truck._id %>" class="table-link">View / Edit</a>
+                  <a href="/edit-trip/<%= truck._id %>" class="table-link">View / Edit</a>
                 </td>
 
               </tr>
