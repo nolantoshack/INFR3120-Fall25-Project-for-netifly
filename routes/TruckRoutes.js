@@ -3,8 +3,8 @@ const router = express.Router();
 const passport = require('passport');
 
 // Import the Truck Model and User model
-const Truck = require('../model/Truck'); 
-const User = require('../model/User'); 
+const Truck = require('../model/Truck.js'); 
+const User = require('../model/User.js'); 
 
 // This function ensures only authenticated users can proceed.
 function ensureAuth(req, res, next) {
