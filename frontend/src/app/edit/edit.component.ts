@@ -1,18 +1,16 @@
-// src/app/edit/edit.component.ts
-
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // <-- NEW: For *ngIf
-import { FormsModule } from '@angular/forms'; // <-- NEW: For [(ngModel)]
-import { Router, RouterLink, ActivatedRoute } from '@angular/router'; // <-- NEW: For routerLink
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms'; 
+import { Router, RouterModule, ActivatedRoute } from '@angular/router'; 
 import { AuthService } from '../services/auth.services';
 import { TrucksService } from '../services/truck.services';
 import { User } from '../models/user.models';
-import { Trip, TripCreationPayload } from '../models/trip.models'; // Placeholder import
+import { Trip, TripCreationPayload } from '../models/trip.models'; 
 
 @Component({
   selector: 'app-edit',
-  standalone: true, // <-- NEW
-  imports: [CommonModule, FormsModule, RouterLink], // <-- NEW: Required imports
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './edit.component.html',
   styleUrls: ['../../css/form_style.css'], 
 })

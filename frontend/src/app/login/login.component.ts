@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router'; 
+import { Router, RouterModule } from '@angular/router'; 
 import { AuthService } from '../services/auth.services';
 import { User } from '../models/user.models';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  standalone: true, 
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['../../css/form_style.css'], 
 })
@@ -45,7 +45,6 @@ export class LoginComponent implements OnInit {
         this.error = response.error;
       } else {
         this.success = 'Login successful!';
-        // Navigate to the home page or dashboard on success
         this.router.navigate(['/']); 
       }
     });

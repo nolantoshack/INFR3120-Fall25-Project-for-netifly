@@ -1,16 +1,14 @@
-// src/app/forgot-password/forgot-password.component.ts
-
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // <-- NEW: For *ngIf
-import { FormsModule } from '@angular/forms'; // <-- NEW: For [(ngModel)]
-import { Router, RouterLink } from '@angular/router'; // <-- NEW: For routerLink
+import { CommonModule } from '@angular/common'; 
+import { FormsModule } from '@angular/forms'; 
+import { Router, RouterModule } from '@angular/router'; 
 import { AuthService } from '../services/auth.services';
 import { User } from '../models/user.models';
 
 @Component({
   selector: 'app-forgot-password',
-  standalone: true, // <-- NEW
-  imports: [CommonModule, FormsModule, RouterLink], // <-- NEW: Required imports
+  standalone: true, 
+  imports: [CommonModule, FormsModule, RouterModule], 
   templateUrl: './forgot-password.component.html',
   styleUrls: ['../../css/form_style.css'], 
 })

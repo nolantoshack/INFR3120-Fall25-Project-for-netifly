@@ -11,6 +11,5 @@ bootstrapApplication(AppComponent, {
     // Global Providers for the application
     provideRouter(routes), // Enables the Angular Router
     provideHttpClient(),   // Enables the HttpClient for API calls
-    // You may also list your global services here (e.g., AuthService, TrucksService)
   ]
 }).catch(err => console.error(err));

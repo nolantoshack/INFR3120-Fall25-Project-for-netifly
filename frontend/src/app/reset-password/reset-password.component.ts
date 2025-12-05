@@ -1,9 +1,7 @@
-// src/app/reset-password/reset-password.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router'
 import { AuthService } from '../services/auth.services';
 import { User } from '../models/user.models';
 
@@ -20,7 +18,7 @@ interface MessageResponse {
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './reset-password.component.html',
   styleUrls: ['../../css/form_style.css'],
 })
@@ -32,7 +30,6 @@ export class ResetPasswordComponent implements OnInit {
   success: string | null = null;
   token: string | null = null;
 
-  // FIX 1: Explicitly type formData
   formData: PasswordResetPayload = {
     newPassword: '',
     confirmPassword: ''
@@ -74,16 +71,12 @@ export class ResetPasswordComponent implements OnInit {
         return;
     }
 
-    // FIX 2: The call is now correctly matched to the new service signature
     this.authService.resetPassword(this.token, this.formData).subscribe((response: MessageResponse) => {
       if (response.error) {
         this.error = response.error;
       } else {
-        this.success = response.message || 'Password updated successfully! Redirecting to login...';
-        // Redirect to login on success
-        setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
+        this.success = response.message || 'Password updated successfully! Redirecting to login.';
+        setTimeout(() => this.router.navigate(['/login']), 2000);
       }
     });
   }

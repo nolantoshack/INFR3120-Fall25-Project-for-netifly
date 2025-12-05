@@ -1,17 +1,15 @@
-// src/app/trucks/trucks.component.ts
-
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // <-- Required for *ngIf, *ngFor
-import { Router, RouterLink } from '@angular/router'; // <-- Required for routerLink
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth.services';
 import { TrucksService } from '../services/truck.services';
 import { User } from '../models/user.models';
-import { Trip } from '../models/trip.models'; // Essential import for Trip type
+import { Trip } from '../models/trip.models'; 
 
 @Component({
   selector: 'app-trucks',
   standalone: true, 
-  imports: [CommonModule, RouterLink], // Required imports for standalone component
+  imports: [CommonModule, RouterModule], // Required imports for standalone component
   templateUrl: './trucks.component.html',
   styleUrls: ['../../css/style.css','../../css/form_style.css'], 
 })
@@ -44,8 +42,6 @@ export class TrucksComponent implements OnInit {
     this.error = null;
     this.loading = true;
 
-    // FIX 1: Use the correct service method: getTrips()
-    // FIX 2: Explicitly type the response parameter to resolve the 'implicit any' error.
     this.trucksService.getTrips().subscribe((response: Trip[] | { error: string }) => { 
       this.loading = false;
       
@@ -54,14 +50,9 @@ export class TrucksComponent implements OnInit {
         this.error = response.error;
         this.trips = []; // Clear trips on error
       } 
-      // Check if the response is a successful array of trips
+      // Check if the response is an array of trips
       else if (Array.isArray(response)) {
         this.trips = response;
-      } 
-      // Handle any other unexpected response
-      else {
-        this.error = 'Received an unexpected response format.';
-        this.trips = []; 
       }
     });
   }
