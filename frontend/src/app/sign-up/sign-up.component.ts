@@ -13,7 +13,7 @@ import { User, RegistrationPayload, AuthResponse } from '../models/user.models';
   standalone: true, 
   imports: [CommonModule, FormsModule, RouterLink], 
   templateUrl: './sign-up.component.html',
-  styleUrls: ['/src/css/form_style.css'],
+  styleUrls: ['../../css/form_style.css'],
 })
 export class SignUpComponent implements OnInit {
   title = 'Register';

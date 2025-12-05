@@ -22,7 +22,7 @@ interface MessageResponse {
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './reset-password.component.html',
-  styleUrls: ['/src/css/form_style.css'],
+  styleUrls: ['../../css/form_style.css'],
 })
 export class ResetPasswordComponent implements OnInit {
   title = 'Reset Password';

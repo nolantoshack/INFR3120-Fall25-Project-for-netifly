@@ -14,7 +14,7 @@ import { TripCreationPayload } from '../models/trip.models'; // Placeholder impo
   standalone: true, // <-- NEW
   imports: [CommonModule, FormsModule, RouterLink], // <-- NEW: Required imports
   templateUrl: './create.component.html',
-  styleUrls: ['/src/css/form_style.css'], 
+  styleUrls: ['../../css/form_style.css'], 
 })
 export class CreateComponent implements OnInit {
   title = 'Log New Trip';

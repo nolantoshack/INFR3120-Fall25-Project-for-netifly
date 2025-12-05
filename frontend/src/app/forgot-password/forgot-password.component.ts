@@ -12,7 +12,7 @@ import { User } from '../models/user.models';
   standalone: true, // <-- NEW
   imports: [CommonModule, FormsModule, RouterLink], // <-- NEW: Required imports
   templateUrl: './forgot-password.component.html',
-  styleUrls: ['/src/css/form_style.css'], 
+  styleUrls: ['../../css/form_style.css'], 
 })
 export class ForgotPasswordComponent implements OnInit {
   title = 'Forgot Password';

@@ -12,7 +12,7 @@ import { User } from '../models/user.models';
   standalone: true, // <-- NEW
   imports: [CommonModule, FormsModule, RouterLink], // <-- Required imports
   templateUrl: './login.component.html',
-  styleUrls: ['/src/css/form_style.css'], 
+  styleUrls: ['../../css/form_style.css'], 
 })
 export class LoginComponent implements OnInit {
   title = 'Login';

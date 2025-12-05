@@ -14,7 +14,7 @@ import { Trip, TripCreationPayload } from '../models/trip.models'; // Placeholde
   standalone: true, // <-- NEW
   imports: [CommonModule, FormsModule, RouterLink], // <-- NEW: Required imports
   templateUrl: './edit.component.html',
-  styleUrls: ['/src/css/form_style.css'], 
+  styleUrls: ['../../css/form_style.css'], 
 })
 export class EditComponent implements OnInit {
   title = 'Edit Trip';

@@ -13,7 +13,7 @@ import { Trip } from '../models/trip.models'; // Essential import for Trip type
   standalone: true, 
   imports: [CommonModule, RouterLink], // Required imports for standalone component
   templateUrl: './trucks.component.html',
-  styleUrls: ['/src/css/style.css','/src/css/form_style.css'], 
+  styleUrls: ['../../css/style.css','../../css/form_style.css'], 
 })
 export class TrucksComponent implements OnInit {
   title = 'Active Trips';

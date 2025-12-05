@@ -11,7 +11,7 @@ import { User } from '../models/user.models';
   standalone: true, // <-- NEW
   imports: [CommonModule, RouterLink], // <-- NEW: Required for template directives/router
   templateUrl: './home.component.html',
-  styleUrls: ['/src/css/style.css'],
+  styleUrls: ['../../css/style.css'],
 })
 export class HomeComponent implements OnInit {
   title = 'Welcome';
