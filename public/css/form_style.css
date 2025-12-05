@@ -302,3 +302,12 @@ header.blue-bar nav a.auth-link.active {
     margin-bottom: 20px;
     font-weight: 600;
 }
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px;
+  background: #273c75;
+  color: white;
+  margin-top: 60px;
+}
