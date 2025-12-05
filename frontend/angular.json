@@ -25,7 +25,8 @@
               }
             ],
             "styles": [
-              "src/styles.css"
+              "src/css/style.css",
+              "src/css/form_style.css"
             ]
           },
           "configurations": {
