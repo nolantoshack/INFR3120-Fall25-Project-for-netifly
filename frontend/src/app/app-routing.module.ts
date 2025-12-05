@@ -1,4 +1,3 @@
-
 import { Routes } from '@angular/router';
 
 // Import all your standalone components
@@ -11,7 +10,7 @@ import { EditComponent } from './edit/edit.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
-//Define and export the routes array
+//Define and export the routes array (used by provideRouter in main.ts)
 export const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
