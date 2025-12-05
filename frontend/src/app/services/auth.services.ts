@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
-// Assuming you have a User model defined at this path:
 import { User } from '../models/user.models'; 
 
-// --- Interface Definitions for clean typing (highly recommended) ---
+// Define the shape of the data for login
+interface LoginPayload {
+  email: string;
+  password: string;
+}
 
-// Define the shape of the data for registration
+// Define the shape of the data for registration 
 interface RegistrationPayload {
   fullName: string;
   email: string;
@@ -28,7 +31,6 @@ interface MessageResponse {
   user?: User; // Returned on successful login/signup
 }
 
-// -----------------------------------------------------------------
 
 @Injectable({
   providedIn: 'root'
@@ -49,46 +51,42 @@ export class AuthService {
     const userJson = localStorage.getItem('currentUser');
     if (userJson) {
       try {
-        this.userSource.next(JSON.parse(userJson));
+        const user: User = JSON.parse(userJson);
+        this.userSource.next(user);
       } catch (e) {
-        console.error("Error parsing user from localStorage", e);
+        console.error("Error parsing user from session:", e);
         localStorage.removeItem('currentUser');
       }
     }
   }
 
-  // Getter for convenience (reads the current value from the BehaviorSubject)
-  get User(): User | null {
-    return this.userSource.value;
+  // Helper to save user to session/local storage
+  private saveUserToSession(user: User): void {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    this.userSource.next(user);
   }
 
-  /**
-   * Sends login credentials to the API and stores the user on success.
-   */
-  login(formData: any): Observable<MessageResponse> {
+  // User Login API call
+  login(formData: LoginPayload): Observable<MessageResponse> {
     return this.http.post<MessageResponse>(`${this.apiUrl}/login`, formData).pipe(
-      tap((response: MessageResponse) => {
+      tap(response => {
         if (response.user) {
-          this.userSource.next(response.user);
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
+          this.saveUserToSession(response.user);
         }
       }),
       catchError(error => {
+        // Return a clean error object for the component to handle
         return of({ error: error.error?.error || 'Login failed.' });
       })
     );
   }
 
-  /**
-   * Sends registration data to the API and stores the user on success.
-   */
+  // User Sign Up API call
   signUp(formData: RegistrationPayload): Observable<MessageResponse> {
     return this.http.post<MessageResponse>(`${this.apiUrl}/signup`, formData).pipe(
-      tap((response: MessageResponse) => {
-        // After successful registration, the backend usually logs the user in.
+      tap(response => {
         if (response.user) {
-            this.userSource.next(response.user);
-            localStorage.setItem('currentUser', JSON.stringify(response.user));
+          this.saveUserToSession(response.user);
         }
       }),
       catchError(error => {
@@ -96,12 +94,10 @@ export class AuthService {
       })
     );
   }
-
-  /**
-   * Logs out the user on the backend and clears the client-side session.
-   */
+  
+  // Logout function
   logout(): void {
-    // Invalidate the session on the backend
+    // Send a request to the backend to clear the session/cookie on the backend
     this.http.get(`${this.apiUrl}/logout`).subscribe({
       next: () => {
         this.userSource.next(null);
@@ -115,9 +111,7 @@ export class AuthService {
     });
   }
 
-  /**
-   * Initiates the forgot password process by sending an email address.
-   */
+  // Initiates the forgot password process by sending an email address.
   forgotPassword(email: string): Observable<MessageResponse> {
     return this.http.post<MessageResponse>(`${this.apiUrl}/forgot-password`, { email }).pipe(
       catchError(error => {
@@ -126,27 +120,22 @@ export class AuthService {
     );
   }
 
-  /**
-   * **FIXED METHOD**
-   * Resets the user's password using the provided token and new password data.
-   * This is the correct signature to accept two arguments as expected by your component.
-   */
+  // Resets the user's password using the token 
   resetPassword(token: string | null, formData: PasswordResetPayload): Observable<MessageResponse> {
     if (!token) {
         return of({ error: 'Missing password reset token.' });
     }
 
-    // Combine the token and form data into a single payload for the API
     const payload = {
-        token: token,
+        userId: token, 
         newPassword: formData.newPassword,
         confirmPassword: formData.confirmPassword
     };
 
-    // Assuming the backend handles the reset via a single POST endpoint with the token in the body
+    // Send the password reset request
     return this.http.post<MessageResponse>(`${this.apiUrl}/reset-password`, payload).pipe(
       catchError(error => {
-        return of({ error: error.error?.error || 'Password reset failed.' });
+        return of({ error: error.error?.error || 'Failed to update password.' });
       })
     );
   }

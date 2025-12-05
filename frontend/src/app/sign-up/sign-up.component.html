@@ -47,40 +47,31 @@
 <main class="page-content">
   <div class="form-container sign-up-form">
 
-    <h2>Create Account</h2>
+    <h2>Create an Account</h2>
 
-    @if (error) {
-      <div class="message-box error-box">{{ error }}</div>
-    }
-    
-    @if (success) {
-      <div class="message-box success-box">{{ success }}</div>
-    }
+    <div class="message-box error-box" *ngIf="error">{{ error }}</div>
+    <div class="message-box success-box" *ngIf="success">{{ success }}</div>
 
-    <form (ngSubmit)="register()">
+    <form (ngSubmit)="register()" #signUpForm="ngModelGroup" ngModelGroup="signUpDataGroup">
 
       <div class="form-group">
         <label for="fullName">Full Name <span class="required-star">*</span></label>
         <input type="text" id="fullName" name="fullName" placeholder="John Doe" required
-            [(ngModel)]="formData.fullName">
-      </div>
+            [(ngModel)]="formData.fullName" ngModel> </div>
 
       <div class="form-group">
         <label for="email">Email Address <span class="required-star">*</span></label>
         <input type="email" id="email" name="email" placeholder="email@company.com" required
-            [(ngModel)]="formData.email">
-      </div>
+            [(ngModel)]="formData.email" ngModel> </div>
 
       <div class="form-group">
         <label for="password">Password <span class="required-star">*</span></label>
         <input type="password" id="password" name="password" placeholder="Must be at least 6 characters" required
-            [(ngModel)]="formData.password">
-      </div>
+            [(ngModel)]="formData.password" ngModel> </div>
 
       <div class="form-group">
         <label for="role">Your Role</label>
-        <select id="role" name="role" [(ngModel)]="formData.role">
-          <option value="Driver">Driver</option>
+        <select id="role" name="role" [(ngModel)]="formData.role" ngModel> <option value="Driver">Driver</option>
           <option value="Dispatcher">Dispatcher</option>
           <option value="Admin">Admin</option>
         </select>
@@ -94,9 +85,13 @@
 
       <p class="form-footer">
         Already have an account?
-        <a [routerLink]="['/login']">Login Here</a>
+        <a [routerLink]="['/login']">Log In</a>
       </p>
 
     </form>
   </div>
 </main>
+
+<footer>
+  <p>&copy; 2025 Fleet Operations Tracker Project. INFR3120.</p>
+</footer>

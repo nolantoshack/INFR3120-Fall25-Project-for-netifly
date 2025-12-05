@@ -13,87 +13,78 @@
     <ng-container *ngIf="User">
       <span class="user-name"><i class="fas fa-user-circle"></i> {{ User.fullName }}</span>
       <a [routerLink]="['/']" [class.active]="activePage === 'home'"><i class="fas fa-home"></i> Home</a>
-      <a [routerLink]="['/create']" [class.active]="activePage === 'create'"><i class="fas fa-plus-circle"></i> Log New Trip</a>
-      <a [routerLink]="['/trucks']" [class.active]="activePage === 'trucks'"><i class="fas fa-truck"></i> View Active Trips</a>
+      <a [routerLink]="['/create']" [class.active]="activePage === 'create'"\><i class="fas fa-plus-circle"></i> Log New Trip</a>
+      <a [routerLink]="['/trucks']" [class.active]="activePage === 'trucks'"\><i class="fas fa-truck"></i> View Active Trips</a>
       <a href="/logout" class="auth-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </ng-container>
   </nav>
 </header>
 
 <main class="page-content">
-  <div class="form-container" *ngIf="trip; else loadingOrError">
-
+  <div class="form-container wide-form" *ngIf="trip; else loadingOrError">
     <h2>{{ title }}</h2>
 
     <div class="message-box error-box" *ngIf="error">{{ error }}</div>
     <div class="message-box success-box" *ngIf="success">{{ success }}</div>
 
-    <form (ngSubmit)="saveTrip()">
+    <form (ngSubmit)="saveTrip()" #editForm="ngModelGroup" ngModelGroup="tripDataGroup">
 
       <div class="form-row">
         <div class="form-group">
-          <label>Trip Name (e.g., LAX-JFK-001) <span class="required-star">*</span></label>
+          <label>Trip Name/Identifier *</label>
           <input type="text" name="tripName" required
-            [(ngModel)]="trip.tripName">
-        </div>
+            [(ngModel)]="trip.tripName" ngModel> </div>
 
         <div class="form-group">
-          <label>Assigned Truck ID <span class="required-star">*</span></label>
+          <label>Truck ID/License Plate *</label>
           <input type="text" name="truckId" required
-            [(ngModel)]="trip.truckId">
-        </div>
+            [(ngModel)]="trip.truckId" ngModel> </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>Driver Name <span class="required-star">*</span></label>
+          <label>Driver Name *</label>
           <input type="text" name="driverName" required
-            [(ngModel)]="trip.driverName">
-        </div>
+            [(ngModel)]="trip.driverName" ngModel> </div>
 
         <div class="form-group">
-          <label>Status <span class="required-star">*</span></label>
-          <select name="status" required [(ngModel)]="trip.status">
-            <option value="Scheduled">Scheduled</option>
+          <label>Trip Status *</label>
+          <select name="status" required [(ngModel)]="trip.status" ngModel> <option value="Scheduled">Scheduled</option>
             <option value="In-Transit">In-Transit</option>
-            <option value="Completed">Completed</option>
             <option value="Delayed">Delayed</option>
+            <option value="Completed">Completed</option>
           </select>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>Route Start <span class="required-star">*</span></label>
+          <label>Origin Point *</label>
           <input type="text" name="routeStart" required
-            [(ngModel)]="trip.routeStart">
-        </div>
+            [(ngModel)]="trip.routeStart" ngModel> </div>
 
         <div class="form-group">
-          <label>Route End <span class="required-star">*</span></label>
+          <label>Destination Point *</label>
           <input type="text" name="routeEnd" required
-            [(ngModel)]="trip.routeEnd">
-        </div>
+            [(ngModel)]="trip.routeEnd" ngModel> </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label>Scheduled Departure Date/Time</label>
-          <input type="datetime-local" name="scheduledDeparture"
-            [(ngModel)]="trip.scheduledDeparture">
-        </div>
+          <label>Scheduled Departure Date/Time *</label>
+          <input type="datetime-local" name="scheduledDeparture" required
+            [(ngModel)]="trip.scheduledDeparture" ngModel> </div>
 
         <div class="form-group">
-          <label>Estimated Arrival Date/Time</label>
-          <input type="datetime-local" name="estimatedArrival"
-            [(ngModel)]="trip.estimatedArrival">
-        </div>
+          <label>Estimated Arrival Date/Time *</label>
+          <input type="datetime-local" name="estimatedArrival" required
+            [(ngModel)]="trip.estimatedArrival" ngModel> </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label>Primary Cargo Type *</label>
-          <select name="cargoType" required [(ngModel)]="trip.cargoType">
+          <select name="cargoType" required [(ngModel)]="trip.cargoType" ngModel> <option value="">-- Select Cargo Type --</option>
             <option value="General Freight">General Freight</option>
             <option value="Refrigerated Goods (Perishables)">Refrigerated Goods (Perishables)</option>
             <option value="Bulk Liquid">Bulk Liquid</option>
@@ -104,15 +95,13 @@
         <div class="form-group">
           <label>Total Weight (kg)</label>
           <input type="number" name="weightKg" placeholder="e.g., 25000" min="0"
-            [(ngModel)]="trip.weightKg">
-        </div>
+            [(ngModel)]="trip.weightKg" ngModel> </div>
       </div>
 
       <div class="form-group">
         <label>Manifest Summary *</label>
         <textarea name="manifestSummary" rows="4" required
-          [(ngModel)]="trip.manifestSummary"></textarea>
-      </div>
+          [(ngModel)]="trip.manifestSummary" ngModel></textarea> </div>
 
       <div class="form-group action-buttons">
         <a [routerLink]="['/trucks']" class="submit-btn secondary">Cancel</a>
@@ -122,7 +111,7 @@
 
     </form>
   </div>
-  
+
   <ng-template #loadingOrError>
     <div class="form-container">
         <h2 *ngIf="error">Error Loading Trip</h2>
@@ -134,8 +123,15 @@
 
 <div id="confirmationModal" class="modal" *ngIf="isModalOpen" [style.display]="isModalOpen ? 'block' : 'none'">
   <div class="modal-content">
-    <h3>Delete this trip?</h3>
-    <button (click)="deleteTrip()" class="submit-btn delete-btn">Confirm Delete</button>
-    <button (click)="isModalOpen = false" class="submit-btn secondary">Cancel</button>
+    <h3>Confirm Delete</h3>
+    <p>Are you sure you want to delete the trip: <strong>{{ trip?.tripName }}</strong>? This action cannot be undone.</p>
+    <div class="modal-buttons">
+      <button type="button" (click)="isModalOpen = false" class="submit-btn secondary">Cancel</button>
+      <button type="button" (click)="deleteTrip()" class="submit-btn delete-btn">Confirm Delete</button>
+    </div>
   </div>
 </div>
+
+<footer>
+  <p>&copy; 2025 Fleet Operations Tracker Project. INFR3120.</p>
+</footer>
