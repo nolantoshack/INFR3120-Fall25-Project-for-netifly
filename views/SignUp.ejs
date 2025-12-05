@@ -1,85 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+ 
   <meta charset="UTF-8" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fleet Operations Tracker | <%= typeof title !== 'undefined' ? title : 'Register' %></title>
-  <link rel="stylesheet" href="/css/form_style.css" />
+
+  <!-- Dynamic page title -->
+  <title>Fleet Operations Tracker | <%= title %></title>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <link rel="stylesheet" href="/css/form_style.css">
 </head>
+
 <body>
+
+<!--  Header Section -->
 <header>
-    <div class="logo">
-      <img src="/img/logo.jpg" alt="Team Logo" />
-      <h1>Fleet Operations Tracker</h1>
-    </div>
-    <nav>
-      <% if (!User) { %>
-          <!-- When NOT logged in -->
-          <a href="/login" class="auth-link">Login</a>
-          <a href="/auth/google" class="hero-btn google-btn">Sign in with Google</a>
-          <a href="/signup" class="auth-link active">Register</a>
-      <% } else { %>
-          <!-- When logged in -->
-          <span class="user-name">Welcome, <%= User.fullName %></span>
-          <a href="/" class="<%= activePage === 'home' ? 'active' : '' %>">Home</a>
-          <a href="/create" class="<%= activePage === 'create' ? 'active' : '' %>">Log New Trip</a>
-          <a href="/trucks" class="<%= activePage === 'trucks' ? 'active' : '' %>">View Active Trips</a>
-          <a href="/logout" class="auth-link logout">Logout</a>
-      <% } %>
-    </nav>
+  <!-- Logo and website title -->
+  <div class="logo">
+    <img src="/img/logo.jpg" alt="Team Logo">
+    <h1>Fleet Operations Tracker</h1>
+  </div>
+
+  <!-- Navigation Bar  -->
+  <nav>
+
+    <% if (!User) { %>
+        <!-- Links shown when user is NOT logged in -->
+
+        <a href="/login" class="auth-link">
+          <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+
+        <a href="/auth/google" class="hero-btn google-btn">
+          <i class="fab fa-google"></i> Sign in with Google
+        </a>
+
+        <a href="/signup" class="auth-link">
+          <i class="fas fa-user-plus"></i> Register
+        </a>
+
+    <% } else { %>
+        <!-- Links shown when user IS logged in -->
+
+        <span class="user-name">
+          <i class="fas fa-user-circle"></i> Welcome, <%= User.fullName %>
+        </span>
+
+        <!-- Home page link -->
+        <a href="/" class="<%= activePage === 'home' ? 'active' : '' %>">
+          <i class="fas fa-home"></i> Home
+        </a>
+
+        <!-- Create trip page link -->
+        <a href="/create" class="<%= activePage === 'create' ? 'active' : '' %>">
+          <i class="fas fa-plus-circle"></i> Log New Trip
+        </a>
+
+        <!-- View active trips page link -->
+        <a href="/trucks" class="<%= activePage === 'trucks' ? 'active' : '' %>">
+          <i class="fas fa-truck"></i> View Active Trips
+        </a>
+
+        <!-- Logout link -->
+        <a href="/logout" class="auth-link logout">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+
+    <% } %>
+
+  </nav>
 </header>
 
+<!--  Main Content Section -->
 <main class="page-content">
-    <!-- Sign Up Form -->
-    <div class="form-container sign-up-form">
-        <h2>Create New User Account</h2>
-        <p>Register to access the Fleet Operations Tracker system.</p>
 
-        <!-- Display error messages if present -->
-        <% if (typeof error !== 'undefined' && error) { %>
-            <div class="message-box error-box">
-                <%= error %>
-            </div>
-        <% } %>
+  <!-- Signup form container -->
+  <div class="form-container sign-up-form">
+
+    <!-- Page title -->
+    <h2>Create New User Account</h2>
+
+    <!-- Short description -->
+    <p>Register to access the Fleet Operations Tracker system.</p>
+
+    <!-- Display error message if it exists -->
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="message-box error-box">
+        <%= error %>
+      </div>
+    <% } %>
         
-        <!--text boxes to type details-->
-        <form action="/signup" method="POST">
+    <!-- Signup form -->
+    <form action="/signup" method="POST">
             
-            <div class="form-group">
-                <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
-            </div>
+      <!-- Full name input -->
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+      </div>
 
-            <div class="form-group">
-                <label for="email">Email Address <span class="required-star">*</span></label>
-                <input type="email" id="email" name="email" placeholder="email@company.com" required>
-            </div>
+      <!-- Email input -->
+      <div class="form-group">
+        <label for="email">Email Address <span class="required-star">*</span></label>
+        <input type="email" id="email" name="email" placeholder="email@company.com" required>
+      </div>
             
-            <div class="form-group">
-                <label for="password">Password <span class="required-star">*</span></label>
-                <input type="password" id="password" name="password" placeholder="Must be at least 6 characters" required>
-            </div>
+      <!-- Password input -->
+      <div class="form-group">
+        <label for="password">Password <span class="required-star">*</span></label>
+        <input type="password" id="password" name="password" placeholder="Must be at least 6 characters" required>
+      </div>
 
-            <div class="form-group">
-                <label for="role">Your Role</label>
-                <select id="role" name="role">
-                    <option value="Driver">Driver</option>
-                    <option value="Dispatcher">Dispatcher</option>
-                    <option value="Admin">Admin</option>
-                </select>
-            </div>
+      <!-- Role selection dropdown -->
+      <div class="form-group">
+        <label for="role">Your Role</label>
+        <select id="role" name="role">
+          <option value="Driver">Driver</option>
+          <option value="Dispatcher">Dispatcher</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </div>
 
-            <div class="form-group" style="text-align: right; padding-top: 15px;">
-                <button type="submit" class="submit-btn primary">
-                    Register Account
-                </button>
-            </div>
-        </form>
-    </div>
+      <!-- Submit button -->
+      <div class="form-group" style="text-align: right; padding-top: 15px;">
+        <button type="submit" class="submit-btn primary">
+          Register Account
+        </button>
+      </div>
+
+    </form>
+  </div>
 </main>
 
+<!-- Footer Section -->
 <footer>
-    <p>&copy; 2025 Fleet Operations Tracker Project. INFR3120.</p>
+  <p>&copy; 2025 Fleet Operations Tracker Project. INFR3120.</p>
 </footer>
 
 </body>
