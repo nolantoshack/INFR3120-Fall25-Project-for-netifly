@@ -45,8 +45,7 @@ app.use(passport.session());
 
 const allowedOrigins = [
     'http://localhost:4200', // Angular Development Server
-    // REPLACE THIS PLACEHOLDER WITH YOUR LIVE NETLIFY URL
-    'https://your-frontend-domain.netlify.app', 
+    'truck-tracker-project.netlify.app', 
 ];
 
 const corsOptions = {
