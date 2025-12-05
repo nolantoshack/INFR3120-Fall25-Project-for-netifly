@@ -6,204 +6,250 @@ const passport = require('passport');
 const Truck = require('../model/Truck.js'); 
 const User = require('../model/User.js'); 
 
-// This function ensures only authenticated users can proceed.
+
+//Authentication Middleware
+
 function ensureAuth(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     }
-    // Redirect to login with an error message if not authenticated
-    res.redirect('/login?error=Please%20log%20in%20to%20access%20that%20page.');
+    // Return a 401 Unauthorized JSON response instead of a redirect
+    res.status(401).json({ 
+        error: 'Unauthorized',
+        message: 'Please log in to access this resource.'
+    });
 }
 
-
-// Show the login page
-router.get('/login', (req, res) => {
-    // Pass error/message from query params
-    res.render('login', {
-        title: 'User Login',
-        activePage: 'login',
-        error: req.query.error || null,
-        message: req.query.message || null
-    });
+//  User Login 
+router.post('/login', (req, res, next) => {
+    // Call the local passport strategy with a custom callback
+    passport.authenticate('local', (err, user, info) => {
+        if (err) {
+            return res.status(500).json({ error: 'Server Error' });
+        }
+        if (!user) {
+            // Return a 401 Unauthorized JSON response
+            return res.status(401).json({ error: info.message || 'Invalid Email or Password.' });
+        }
+        // Establish session and return user data
+        req.logIn(user, (err) => {
+            if (err) {
+                return res.status(500).json({ error: 'Failed to create session.' });
+            }
+            // Return JSON data about the logged-in user
+            res.status(200).json({ 
+                success: true, 
+                message: 'Login successful.',
+                user: {
+                    _id: user._id,
+                    fullName: user.fullName,
+                    email: user.email,
+                    role: user.role
+                }
+            });
+        });
+    })(req, res, next);
 });
 
-// Handle user login submission
-router.post('/login',
-    // Call the local passport strategy
-    passport.authenticate('local', {
-        // FIX: Redirects to the home page after successful login
-        successRedirect: '/', 
-        failureRedirect: '/login?error=Invalid%20Email%20or%20Password.',
-        failureFlash: false 
-    })
-);
 
-// Google OAuth
+
+// This route starts the OAuth process
 router.get('/auth/google', passport.authenticate('google', { 
-    scope: ['profile', 'email'] 
+    scope: ['profile', 'email']
 }));
 
-router.get(
-    '/auth/google/callback',
+// This route is the callback from Google
+router.get('/auth/google/callback', 
     passport.authenticate('google', { 
-        failureRedirect: '/login?error=Google%20Login%20Failed.' 
+        // If Google login fails, redirect the user's browser to an Angular error page
+        failureRedirect: process.env.CLIENT_URL + '/login?error=GoogleAuthFailed' 
     }),
     (req, res) => {
-        // FIX: Redirects to the home page after successful Google login
-        res.redirect('/'); 
+        // Redirect the user's browser back to the Angular app's dashboard route
+        //You must set the CLIENT_URL in your .env file
+        res.redirect(process.env.CLIENT_URL + '/dashboard'); 
     }
 );
 
-// Logout Route
-router.get('/logout', (req, res, next) => {
-    req.logout((err) => {
-        if (err) { return next(err); }
-        // FIX: Redirects to the home page (/) instead of the login page (/login)
-        res.redirect('/?message=You%20have%20been%20logged%20out.');
+// New endpoint to handle failed Google login 
+router.get('/login-failure', (req, res) => {
+    res.status(401).json({
+        success: false,
+        error: 'Google authentication failed.'
     });
 });
 
-// Show the form page where the user can sign up
-router.get('/signup', (req, res) => {
-    res.render('SignUp', {
-        title: 'User Registration',
-        activePage: 'SignUp',
-        error: req.query.error || null
-    });
-});
 
-// Handle user registration submission
+
+// User Registration
 router.post('/signup', async (req, res) => {
-    try {
-        const { email, password, fullName, role } = req.body;
+    const { email, password, fullName, role } = req.body;
 
-        // Check if user already exists
+    try {
         let user = await User.findOne({ email });
+
         if (user) {
-            return res.redirect('/signup?error=An%20account%20with%20this%20email%20already%20exists.');
+            // Return JSON error
+            return res.status(400).json({ error: 'User already exists.' });
+        }
+        if (password.length < 6) {
+             // Return JSON error
+            return res.status(400).json({ error: 'Password must be at least 6 characters.' });
         }
 
-        const newUser = await User.create({ email, password, fullName, role });
+        user = new User({ email, password, fullName, role });
+        await user.save();
 
-        // Auto-login the user after registration
-        req.login(newUser, function(err) {
-            if (err) {
-                console.error('Auto-login failed after signup:', err);
-                return res.redirect('/login?error=Registration%20successful,%20but%20auto-login%20failed.%20Please%20log%20in.');
-            }
-            return res.redirect('/?message=Registration%20Successful!%20Welcome.'); // Redirect to home after signup
+        // Successful registration: Return JSON data
+        res.status(201).json({ 
+            success: true, 
+            message: 'Registration successful. Please log in.',
+            user: { fullName, email, role }
         });
-        
+
     } catch (err) {
-        console.error('Error in signup:', err);
-        res.redirect('/signup?error=Registration%20failed.%20Please%20try%20again.');
+        console.error('Error during signup:', err);
+        // Return JSON error
+        res.status(500).json({ error: 'Server error during registration.' });
     }
 });
 
-// Route to render the Create New Trip form
-router.get('/create', ensureAuth, (req, res) => {
-    res.render('create', {
-        title: 'Log New Trip',
-        activePage: 'create',
-        error: req.query.error || null
+
+// User Logout 
+router.get('/logout', (req, res) => {
+    // Clear session and return JSON
+    req.logout((err) => {
+        if (err) {
+            return res.status(500).json({ error: 'Failed to log out.' });
+        }
+        res.status(200).json({ success: true, message: 'Logged out successfully.' });
     });
 });
 
-// Route to handle form submission and save the new truck/trip
-router.post('/create', ensureAuth, async (req, res) => {
+
+//GET single trip by ID 
+router.get('/trucks/:id', ensureAuth, async (req, res) => {
     try {
-        // Assign the current authenticated user's ID to the trip
-        const newTrip = new Truck({
-            ...req.body,
-            user: req.user.id
-        });
-
-        await newTrip.save();
-        // Redirect to the list of trucks on success
-        res.redirect('/trucks?message=Trip%20Logged%20Successfully');
-    } catch (err) {
-        console.error('Error logging new trip:', err);
-        // Redirect back to the create page on error
-        res.redirect('/create?error=Failed%20to%20log%20trip.%20Check%20your%20inputs.');
-    }
-});
-
-// Route to list all active trips
-router.get('/trucks', ensureAuth, async (req, res) => {
-    try {
-        // Fetch all trips from all users
-        const trips = await Truck.find({})
-            // .populate('user') // Kept commented out for stability
-            .sort({ scheduledDeparture: 'desc' }) // Sort by departure date
-            .lean(); 
-
-        res.render('trucks', {
-            trips, // Pass the list of trips to the EJS template
-            title: 'Active Trip Manifests',
-            activePage: 'trucks',
-            message: req.query.message || null,
-            error: req.query.error || null
-        });
-    } catch (err) {
-        console.error('Error fetching trips for /trucks route:', err);
-        // This catch block executes when the Mongoose query fails (likely due to invalid IDs)
-        // and redirects to home. Removing .populate should fix this.
-        res.redirect('/?error=Failed%20to%20load%20trip%20data%20due%20to%20a%20server%20error.');
-    }
-});
-
-// Show edit page
-router.get('/edit-trip/:id', ensureAuth, async (req, res) => {
-    try {
-        const trip = await Truck.findById(req.params.id).lean();
+        const trip = await Truck.findById(req.params.id);
         
-        if (!trip) return res.status(404).send('Trip not found');
-
-        const error = req.query.error || null;
+        if (!trip) {
+            return res.status(404).json({ error: 'Trip not found' });
+        }
         
-        res.render('edit', {
-            trip,
-            title: `Edit Trip: ${trip.truckId}`,
-            activePage: 'trucks',
-            error: error
-        });
+        // Success: return JSON object
+        res.status(200).json(trip);
     } catch (err) {
         console.error('Error loading trip:', err);
-        res.status(500).send('Error loading trip.');
+        res.status(500).json({ error: 'Error loading trip details.' });
     }
 });
 
-// Save edited trip
+
+// Show All Trips 
+router.get('/trucks', ensureAuth, async (req, res) => {
+    try {
+        // Get message/error if any
+        const message = req.query.message || null; 
+        const error = req.query.error || null;
+        
+        // Fetch trips
+        const trips = await Truck.find({ user: req.user.id }).populate('user').lean();
+        
+        //Return JSON data instead of rendering EJS
+        res.status(200).json({
+            success: true,
+            trips: trips,
+            message: message,
+            error: error
+        });
+
+    } catch (err) {
+        console.error('Error fetching trips:', err);
+        res.status(500).json({ error: 'Failed to retrieve trips.' });
+    }
+});
+
+
+// Create New Trip 
+router.post('/create', ensureAuth, async (req, res) => {
+    try {
+        // Add the authenticated user's ID to the trip data
+        const newTripData = {
+            ...req.body,
+            user: req.user.id 
+        };
+
+        const newTrip = await Truck.create(newTripData);
+        
+        // Return JSON success response
+        res.status(201).json({ 
+            success: true, 
+            message: 'Trip created successfully.', 
+            tripId: newTrip._id 
+        });
+
+    } catch (err) {
+        console.error('Error creating trip:', err);
+        //Return JSON error response 
+        const errorMsg = err.message || 'Failed to log new trip. Check your inputs.';
+        res.status(400).json({ error: errorMsg });
+    }
+});
+
+
+
+//Save edited trip
 router.post('/update-trip/:id', ensureAuth, async (req, res) => {
     try {
         let trip = await Truck.findById(req.params.id);
         
-        if (!trip) return res.status(404).send('Trip not found');
+        if (!trip) return res.status(404).json({ error: 'Trip not found' });
 
         await Truck.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
-        res.redirect('/trucks?message=Trip%20Updated%20Successfully');
+        
+        // Return JSON success response
+        res.status(200).json({ 
+            success: true, 
+            message: 'Trip Updated Successfully',
+            tripId: req.params.id
+        });
     } catch (err) {
         console.error('Error updating trip:', err);
-        // Redirect back to the edit page on error
-        res.redirect(`/edit-trip/${req.params.id}?error=Failed%20to%20update%20trip.%20Check%20your%20inputs.`);
+        // Return JSON error response
+        const errorMsg = err.message || 'Failed to update trip. Check your inputs.';
+        res.status(400).json({ 
+            error: errorMsg,
+            tripId: req.params.id
+        });
     }
 });
 
-// Delete trip
+
+// Delete trip 
 router.post('/delete-trip/:id', ensureAuth, async (req, res) => {
     try {
         let trip = await Truck.findById(req.params.id);
 
-        if (!trip) return res.status(404).send('Trip not found');
+        if (!trip) return res.status(404).json({ error: 'Trip not found' });
 
-        // Perform the deletion
+        // Ensure the logged-in user owns the trip
+        if (trip.user.toString() !== req.user.id) {
+            return res.status(403).json({ error: 'Not authorized to delete this trip.' });
+        }
+
         await Truck.deleteOne({ _id: req.params.id });
 
-        res.redirect('/trucks?message=Trip%20Deleted%20Successfully');
+        //Return JSON success response
+        res.status(200).json({ 
+            success: true, 
+            message: 'Trip Deleted Successfully' 
+        });
+
     } catch (err) {
         console.error('Error deleting trip:', err);
-        res.redirect('/trucks?error=Failed%20to%20delete%20trip.');
+        res.status(500).json({ error: 'Failed to delete trip.' });
     }
 });
+
 
 module.exports = router;
