@@ -1,60 +1,52 @@
-=========================================================
-
-1. DEPENDENCIES
-
-=========================================================
-
-Ignore all installed modules
-
-/node_modules
-
-=========================================================
-
-2. CONFIG & SECRETS
-
-=========================================================
-
-Ignore environment variable files
-
-.env
-.env.*
-
-Ignore any other sensitive config files you might create
-
-config.js
-/config/keys.js
-
-=========================================================
-
-3. BUILD AND LOG FILES
-
-=========================================================
-
-Compiled/transpiled source and distribution folders
-
-/dist
-/build
-
-Log files
-
-*.log
-
-=========================================================
-
-4. OS AND EDITOR FILES
-
-=========================================================
-
-macOS and Linux temporary files
-
+# GENERAL / OS / EDITOR FILES
 .DS_Store
 
-Visual Studio Code settings
-
+# Visual Studio Code
 .vscode/
+.history/
 
-NPM & Yarn internal files
-
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
+
+# 2. DEPENDENCIES
+node_modules/
+
+# 
+# BACKEND
+# This ensures your secrets stay local
+backend/.env
+backend/.env.test
+backend/.env.production
+
+# Optional: Ignore specific config keys if you use them
+backend/config/keys.js
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# FRONTEND
+# Angular CLI cache
+.angular/
+
+# Compiled output (The 'dist' folder contains the built website)
+frontend/dist/
+frontend/out-tsc/
+
+# Unit Testing Coverage
+frontend/coverage/
+
+# Temporary files
+frontend/tmp/
+frontend/bazel-out/
+
+# Miscellaneous Angular files
+.sass-cache/
+connect.lock
+testem.log
+typings/
