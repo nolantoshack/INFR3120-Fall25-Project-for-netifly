@@ -36,7 +36,7 @@ interface MessageResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = '/api'; // Base API URL for your backend routes
+  private apiUrl = '/api'; // Base API URL for  backend routes
   private userSource = new BehaviorSubject<User | null>(null);
   
   // Public observable for components to subscribe to

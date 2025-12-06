@@ -1,15 +1,6 @@
-// src/main.ts
-
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
-import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
-import { routes } from './app/app-routing.module'; // Imports the routes array
+import { appConfig } from './app/app.config';
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    // Global Providers for the application
-    provideRouter(routes), // Enables the Angular Router
-    provideHttpClient(),   // Enables the HttpClient for API calls
-  ]
-}).catch(err => console.error(err));
+bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));

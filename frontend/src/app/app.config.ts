@@ -1,0 +1,13 @@
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideHttpClient } from '@angular/common/http';
+
+// Import your routes from the file you uploaded
+import { routes } from './app-routing.module';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routes),      // Enables the router
+    provideHttpClient()         // Enables HTTP
+  ]
+};
